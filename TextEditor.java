@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 //TextEditor class starts here
@@ -22,6 +24,7 @@ class TextEditor extends JFrame implements ActionListener {
         Menu m2 = new Menu("Edit");
         Menu m3 = new Menu("Tools");
         Menu m4 = new Menu("Help");
+        Menu font = new Menu("Choose font");
         mb.add(m1);
         mb.add(m2);
         mb.add(m3);
@@ -36,12 +39,13 @@ class TextEditor extends JFrame implements ActionListener {
                 new MenuItem("Find Next"), new MenuItem("Replace"),
                 new MenuItem("Go To"), new MenuItem("Select All"),
                 new MenuItem("Time Stamp") };
-        MenuItem mi3[] = { new MenuItem("Choose Font"), new MenuItem("Compile"),
+        MenuItem mi3[] = { font, new MenuItem("Compile"),
                 new MenuItem("Run") };
-        MenuItem mi4[] = { new MenuItem("Help Topics"),
+        MenuItem mi4[] = { new MenuItem("Help"),
                 new MenuItem("About TextEditor") };
-        MenuItem mi5[] = { new MenuItem("Serif"), new MenuItem("Sans Serif"), new MenuItem("Monospaced"),
-                new MenuItem("Dialog"), new MenuItem("DialogInput") };
+        MenuItem mi5[] = { new MenuItem("Helvetica"), new MenuItem("Sans Serif"), new MenuItem("Monospaced"),
+                new MenuItem("Times New Roman"), new MenuItem("Calibri") };
+
         for (int i = 0; i < mi1.length; i++) {
             m1.add(mi1[i]);
             mi1[i].addActionListener(this);
@@ -60,23 +64,15 @@ class TextEditor extends JFrame implements ActionListener {
             m4.add(mi4[i]);
             mi4[i].addActionListener(this);
         }
+        for (int i = 0; i < mi5.length; i++) {
+            font.add(mi5[i]);
+            mi5[i].addActionListener(this);
+        }
 
         ta.setWrapStyleWord(true);
         ta.setLineWrap(true);
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-//        this.addWindowListener(new java.awt.event.WindowAdapter() {
-//            @Override
-//            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-//                if (JOptionPane.showConfirmDialog(ta,
-//                        "Are you sure you want to close this window?", "Close Window?",
-//                        JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-//                    System.out.println("hi");
-//                    System.exit(0);
-//                }
-//            }
-//        });
 
         MyWindowsAdapter mw = new MyWindowsAdapter(this);
         addWindowListener(mw);
@@ -87,6 +83,7 @@ class TextEditor extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent ae) {
         String arg = (String) ae.getActionCommand();
+        //System.out.println(arg);
         if (arg.equals("New")) {
             dispose();
             TextEditor t11 = new TextEditor();
@@ -226,19 +223,59 @@ class TextEditor extends JFrame implements ActionListener {
             ta.insert(hms, loc);
         }
         if (arg.equals("About TextEditor")) {
-            AboutDialog d1 = new AboutDialog(this, "About TextEditor");
+            JOptionPane.showConfirmDialog(this, getAbout(), "About", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-            d1.setVisible(true);
-            setSize(500, 500);
         }
         if (arg.equals("Print")) {
             System.out.println(ta.getText());
         }
-        if (arg.equals("Choose Font")) {
+        if (arg.equals("Helvetica")) {
+            ta.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        }
+        if (arg.equals("Sans Serif")) {
+            ta.setFont(new Font("Sans Serif", Font.PLAIN, 14));
+        }
+        if (arg.equals("Monospaced")) {
+            ta.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        }
+        if (arg.equals("Times New Roman")) {
+            ta.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+        }
+        if (arg.equals("Calibri")) {
+            ta.setFont(new Font("Calibri", Font.PLAIN, 14));
+        }
+        if (arg.equals("Help")) {
+            JFrame help = new JFrame();
+            String helpInfo = null;
+            try {
+                helpInfo = Files.readString(Path.of("./help.txt"));
+                //System.out.println(helpInfo);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            JTextArea text = new JTextArea();
+            text.setEditable(false);
+            text.setText(helpInfo);
+            JScrollPane pane = new JScrollPane (text,
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            help.add(pane);
+            //help.add(text);
 
+
+            help.setBounds(100, 100, 450, 300);
+            help.setResizable(false);
+
+            help.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            help.setVisible(true);
         }
     }
 
+    private String getAbout() {
+        return ""+
+                "This is a basic little text editor " +
+                "done as a lab for Zip Code Wilmington.\n" +
+                "It mostly just has basic writing functionality";
+    }
 
 
     public static void main(String args[]) {
@@ -288,18 +325,5 @@ class MyWindowsAdapter extends WindowAdapter {
             }
         }
         System.exit(0);
-    }
-}
-
-class AboutDialog extends Dialog implements ActionListener {
-    AboutDialog(Frame parent, String title) {
-        super(parent, title, false);
-        this.setResizable(false);
-        setLayout(new FlowLayout(FlowLayout.LEFT));
-        setSize(500, 300);
-    }
-
-    public void actionPerformed(ActionEvent ae) {
-        dispose();
     }
 }

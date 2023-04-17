@@ -1,0 +1,33 @@
+Editor info:
+
+File:
+- New: creates a new text editor so you can start fresh
+
+- Open: opens a different file to edit
+
+- Save: saves the current file
+
+- Save as: saves the editor to a new file
+
+- Print: prints it to the program console (idk how to connect to a printer)
+
+Edit:
+- Delete: deletes selected text
+
+- Cut: copies and deletes selected text
+
+- Copy: copies selected text
+
+- Paste: pastes text from clipboard
+
+- Find Next: finds the next instance of the word typed in
+
+Tools:
+- Word Wrap: changes word wrap
+
+- Choose Font: changes the font the editor displays in
+
+Help:
+- Help: this
+
+- About TextEditor: about info 
